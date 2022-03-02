@@ -16,5 +16,5 @@
       region: eu-central-1
       wait: yes
       instance_tags:
-        name:  devserver1302
+        Name:  devserver1302
 
