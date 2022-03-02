@@ -9,7 +9,7 @@
 
   tasks:
   - name: Create ec2 dev server
-    local_action: ec2
+    ec2:
       instance_type: t2.micro
       image: ami-0d527b8c289b4af7f
       count: 1
@@ -20,7 +20,7 @@
     register: ec2
 
   - name: Add to Inventory
-    local_action: lineinfile
+    lineinfile:
       dest: "./hosts"
       regexp: {{ item.public_ip }}
       insertafter: "[devserver]" line={{ item.public_ip }}
@@ -28,14 +28,17 @@
 
 
   - name: Wait for SSH
-    local_action: wait_for
+    wait_for:
       host: {{ item.public_ip }}
       port: 22
       state: started
     with_items: "{{ ec2.instances }}"
 
   - name: Add tag to Instance(s)
-    local_action: ec2_tag resource={{ item.id }} region={{ region }} state=present
+    ec2_tag:
+      resource: {{ item.id }}
+      region: eu-central-1
+      state: present
     with_items: "{{ ec2.instances }}"
     args:
       tags:
