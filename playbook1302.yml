@@ -14,4 +14,5 @@
       key_name: my-key13
       group: MySG1
       region: eu-central-1
+      group: devservers
       wait: yes
