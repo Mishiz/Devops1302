@@ -1,12 +1,12 @@
 ---
 
-- name: install aws dev
+- name: create aws ev2 dev server
   hosts: localhost
   become: yes
 
 
   tasks:
-  - name: Create ec2 dev
+  - name: Create ec2 dev server
     ec2:
       instance_type: t2.micro
       image: ami-0d527b8c289b4af7f
@@ -17,4 +17,44 @@
       wait: yes
       instance_tags:
         Name:  devserver1302
+
+
+- name: configure devserver
+  hosts: localhost
+  become: yes
+
+  tasks:
+  - name: Locate instance id with tags
+    ec2_instance_info:
+      region: eu-central-1
+      filters:
+        "tag:Name": devserver1302
+  - name: Ensure default-jdk is installed
+    apt:
+      name: default-jdk
+      state: present
+  - name: Ensure git is installed
+    apt:
+      name: git
+      state: present
+  - name: Ensure maven is installed
+    apt:
+      name: maven
+      state: present
+  - name: Clone app from git
+    git:
+      repo: https://github.com/boxfuse/boxfuse-sample-java-war-hello.git
+      dest: /tmp/boxfuse
+  - name: Make WAR file
+    shell:
+      cmd: mvn -f /tmp/boxfuse/pom.xml package
+  - name: rename WAR
+    copy:
+      src: /tmp/boxfuse/target/hello-1.0.war
+      dest: /tmp/boxfuse/target/ROOT.war
+      remote_src: true
+  - name: rename WAR2
+    file:
+      path: /tmp/boxfuse/target/hello-1.0.war
+      state: absent
 
