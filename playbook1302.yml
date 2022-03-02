@@ -51,11 +51,7 @@
   become: yes
 
   tasks:
-  - name: Locate instance id with tags
-    ec2_instance_info:
-      region: eu-central-1
-      filters:
-        "tag:Name": devserver1302
+
   - name: Ensure default-jdk is installed
     apt:
       name: default-jdk
