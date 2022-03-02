@@ -51,7 +51,7 @@
   become: yes
 
   tasks:
-
+  - meta: refresh_inventory
   - name: Ensure default-jdk is installed
     apt:
       name: default-jdk
