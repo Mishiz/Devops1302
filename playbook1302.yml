@@ -48,7 +48,7 @@
 
 - name: configure devserver
   hosts: devserver
-  become: yes
+
 
   tasks:
   - meta: refresh_inventory
